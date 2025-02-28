@@ -9,6 +9,10 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "thirdauthconfig.github")
 public class GithubThirdAuthConfiguration {
 
-    private String clientid;
-    private String clientsecret;
+    private String clientId;
+    private String clientSecret;
+    private String tokenUri;
+    private String userUri;
+    private String emailUri;
+    private String apiVersion;
 }
