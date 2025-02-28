@@ -15,14 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class LoginController {
 
     @Resource(name = "githubThirdAuthService")
-    private ThirdAuthService thirdAuthService;
+    private ThirdAuthService githubThirdAuthService;
 
-    @GetMapping("callback")
-    public Object thirdAuthCallBack(@RequestParam("code") String code) {
+    @GetMapping("thirdAuth/github")
+    public Object githubThirdAuthCallBack(@RequestParam("code") String code) {
         //TODO 调用service层的组件
         //TODO 需要自定义一个相应对象
         try {
-            Result result = thirdAuthService.thirdAuthHandle(code);
+            Result result = githubThirdAuthService.thirdAuthHandle(code);
             if (result.getIsSuccessful()) {
 
             }
