@@ -2,3 +2,12 @@ spring:
   application:
     name: fakeStackOverflow
 
+
+thirdauthconfig:
+  github:
+    tokenUri: https://github.com/login/oauth/access_token
+    userUri: https://api.github.com/user
+    emailUri: https://api.github.com/email
+    apiVersion: test
+    clientId: test
+    clientSecret: test
