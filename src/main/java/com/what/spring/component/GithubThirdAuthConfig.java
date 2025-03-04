@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 
 @Component
 public class GithubThirdAuthConfig implements ThirdAuthConfig {

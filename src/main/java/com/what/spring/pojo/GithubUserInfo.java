@@ -7,14 +7,17 @@ import lombok.Data;
 public class GithubUserInfo implements ThirdPlatformUserInfo {
 
     @JsonProperty("id")
-    private Long userId;
+    private Integer userId;
 
-    @JsonProperty("avatar_id")
+    @JsonProperty("avatar_url")
     private String avatarURL;
 
     private String email;
 
     @JsonProperty("html_url")
     private String htmlURL;
+
+    @JsonProperty("name")
+    private String userName;
 
 }
