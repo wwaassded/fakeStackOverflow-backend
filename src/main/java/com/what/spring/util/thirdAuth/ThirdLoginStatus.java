@@ -1,4 +1,4 @@
-package com.what.spring.util;
+package com.what.spring.util.thirdAuth;
 
 public enum ThirdLoginStatus {
     SUCCES_NEED_CREATE,

@@ -1,6 +1,6 @@
 package com.what.spring.mapper;
 
-import com.what.spring.pojo.PlatfromUser;
+import com.what.spring.pojo.thirAuth.PlatfromUser;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 

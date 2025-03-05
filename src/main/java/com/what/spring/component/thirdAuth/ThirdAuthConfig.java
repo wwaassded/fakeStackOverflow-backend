@@ -1,8 +1,7 @@
-package com.what.spring.component;
+package com.what.spring.component.thirdAuth;
 
 import com.what.spring.Exception.StringEmptyOrNull;
-import com.what.spring.pojo.ThirdPlatformUserInfo;
-import org.springframework.web.reactive.function.client.WebClient;
+import com.what.spring.pojo.thirAuth.ThirdPlatformUserInfo;
 
 import java.util.Optional;
 

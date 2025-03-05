@@ -1,4 +1,4 @@
-package com.what.spring.pojo;
+package com.what.spring.pojo.thirAuth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;

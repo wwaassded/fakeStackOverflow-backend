@@ -1,13 +1,12 @@
 package com.what.spring.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.what.spring.Exception.StringEmptyOrNull;
-import com.what.spring.pojo.GithubCallBackResponse;
-import com.what.spring.pojo.PlatfromUser;
+import com.what.spring.pojo.thirAuth.GithubCallBackResponse;
+import com.what.spring.pojo.thirAuth.PlatfromUser;
 import com.what.spring.pojo.Result;
-import com.what.spring.service.ThirdAuthService;
-import com.what.spring.util.ThirdLoginStatus;
+import com.what.spring.service.thirdAuth.ThirdAuthService;
+import com.what.spring.util.thirdAuth.ThirdLoginStatus;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;

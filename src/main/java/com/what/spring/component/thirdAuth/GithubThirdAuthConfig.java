@@ -1,20 +1,18 @@
-package com.what.spring.component;
+package com.what.spring.component.thirdAuth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.what.spring.Exception.StringEmptyOrNull;
-import com.what.spring.pojo.GithubThirdAuthConfiguration;
-import com.what.spring.pojo.GithubUserInfo;
-import com.what.spring.pojo.ThirdPlatformUserInfo;
+import com.what.spring.pojo.thirAuth.GithubThirdAuthConfiguration;
+import com.what.spring.pojo.thirAuth.GithubUserInfo;
+import com.what.spring.pojo.thirAuth.ThirdPlatformUserInfo;
 import com.what.spring.util.Utils;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Optional;
-import java.util.function.Consumer;
 
 @Component
 public class GithubThirdAuthConfig implements ThirdAuthConfig {

@@ -1,4 +1,4 @@
-package com.what.spring.pojo;
+package com.what.spring.pojo.thirAuth;
 
 import lombok.Data;
 
