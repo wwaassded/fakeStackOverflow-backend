@@ -1,6 +1,6 @@
-package com.what.spring.pojo;
+package com.what.spring.pojo.thirAuth;
 
-import com.what.spring.util.ThirdLoginStatus;
+import com.what.spring.util.thirdAuth.ThirdLoginStatus;
 import lombok.Data;
 
 @Data

@@ -1,4 +1,4 @@
-package com.what.spring.pojo;
+package com.what.spring.pojo.thirAuth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
@@ -17,7 +17,10 @@ public class GithubUserInfo implements ThirdPlatformUserInfo {
     @JsonProperty("html_url")
     private String htmlURL;
 
-    @JsonProperty("name")
+    @JsonProperty("login")
     private String userName;
+
+    @JsonProperty("following_url")
+    private String followingUrl;
 
 }

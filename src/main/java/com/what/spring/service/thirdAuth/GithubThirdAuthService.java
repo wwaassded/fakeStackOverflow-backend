@@ -1,14 +1,13 @@
-package com.what.spring.service;
+package com.what.spring.service.thirdAuth;
 
 import com.what.spring.Exception.StringEmptyOrNull;
-import com.what.spring.component.ThirdAuthConfig;
+import com.what.spring.component.thirdAuth.ThirdAuthConfig;
 import com.what.spring.mapper.UserMapper;
-import com.what.spring.pojo.GithubUserInfo;
-import com.what.spring.pojo.PlatfromUser;
+import com.what.spring.pojo.thirAuth.GithubUserInfo;
+import com.what.spring.pojo.thirAuth.PlatfromUser;
 import com.what.spring.pojo.Result;
 import jakarta.annotation.Resource;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;

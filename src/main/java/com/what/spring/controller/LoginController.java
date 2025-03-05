@@ -1,13 +1,12 @@
 package com.what.spring.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.what.spring.Exception.StringEmptyOrNull;
-import com.what.spring.pojo.GithubCallBackResponse;
-import com.what.spring.pojo.PlatfromUser;
+import com.what.spring.pojo.thirAuth.GithubCallBackResponse;
+import com.what.spring.pojo.thirAuth.PlatfromUser;
 import com.what.spring.pojo.Result;
-import com.what.spring.service.ThirdAuthService;
-import com.what.spring.util.ThirdLoginStatus;
+import com.what.spring.service.thirdAuth.ThirdAuthService;
+import com.what.spring.util.thirdAuth.ThirdLoginStatus;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -16,12 +15,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 
 
 @RestController
@@ -48,7 +45,8 @@ public class LoginController {
         //TODO 调用service层的组件
         //TODO 需要自定义一个相应对象
         GithubCallBackResponse githubCallBackResponse = new GithubCallBackResponse();
-        String redirectUrl = rootUrl + "/" + mainPageUrl + "?";
+        StringBuilder redirectUrl = new StringBuilder();
+        redirectUrl.append(rootUrl).append('/').append(mainPageUrl).append('?');
         try {
             Result result = githubThirdAuthService.thirdAuthHandle(code);
             LOG.info(result.getMessage());
@@ -83,7 +81,10 @@ public class LoginController {
             githubCallBackResponse.setStatus(ThirdLoginStatus.GET_NO_USE_STRING);
             githubCallBackResponse.setMessage(e.getMessage());
         } finally {
-            response.sendRedirect(redirectUrl);
+            redirectUrl.append("status").append("=").append(githubCallBackResponse.getStatus()).append('&');
+            redirectUrl.append("message").append("=").append(githubCallBackResponse.getMessage()).append('&');
+            redirectUrl.append("isSuccess").append("=").append(githubCallBackResponse.isSuccess());
+            response.sendRedirect(redirectUrl.toString());
         }
     }
 }
