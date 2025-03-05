@@ -17,7 +17,10 @@ public class GithubUserInfo implements ThirdPlatformUserInfo {
     @JsonProperty("html_url")
     private String htmlURL;
 
-    @JsonProperty("name")
+    @JsonProperty("login")
     private String userName;
+
+    @JsonProperty("following_url")
+    private String followingUrl;
 
 }

@@ -1,9 +1,11 @@
 package com.what.spring.mapper;
 
 import com.what.spring.pojo.thirAuth.PlatfromUser;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+@Mapper
 @Repository
 public interface UserMapper {
 

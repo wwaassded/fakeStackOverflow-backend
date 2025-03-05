@@ -1,5 +1,7 @@
 package com.what.spring.component.thirdAuth;
 
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.what.spring.Exception.StringEmptyOrNull;
 import com.what.spring.pojo.thirAuth.GithubThirdAuthConfiguration;
@@ -12,14 +14,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 
 @Component
 public class GithubThirdAuthConfig implements ThirdAuthConfig {
 
     private final GithubThirdAuthConfiguration configuration;
 
-    private final WebClient webClient;
 
     @Resource(name = "myObjectMapper")
     private ObjectMapper objectMapper;
@@ -27,9 +31,8 @@ public class GithubThirdAuthConfig implements ThirdAuthConfig {
     private static final Logger LOG = LoggerFactory.getLogger(GithubThirdAuthConfig.class);
 
 
-    GithubThirdAuthConfig(GithubThirdAuthConfiguration configuration, WebClient webClient) {
+    GithubThirdAuthConfig(GithubThirdAuthConfiguration configuration) {
         this.configuration = configuration;
-        this.webClient = webClient;
     }
 
     @Override
@@ -44,24 +47,19 @@ public class GithubThirdAuthConfig implements ThirdAuthConfig {
         Utils.NoEmptyOrBlank(clientSecret, "github thirdAuthCode is null or blank");
         //TODO 真正开始处理 请求逻辑
         try {
-            String rawToken = webClient.get()
-                    .uri(tokenUri)
-                    .header("client_id", clientId)
-                    .header("client_secret", clientSecret)
-                    .header("code", thirdAuthCode)
-                    .header("accept", "json")
-                    .retrieve()
-                    .bodyToMono(java.lang.String.class)
-                    .block();
+            LOG.info("i am here");
+            Map<String, Object> paramMap = new HashMap<>();
+            paramMap.put("client_id", clientId);
+            paramMap.put("client_secret", clientSecret);
+            paramMap.put("code", thirdAuthCode);
+            paramMap.put("accept", "json");
+            String rawToken = HttpUtil.post(tokenUri, paramMap);
             Utils.NoEmptyOrBlank(rawToken, "get empty token");
             String token = rawToken.split("&")[0].split("=")[1];
-            String rawGithubUserInfo = webClient.get()
-                    .uri(userUri)
+            String rawGithubUserInfo = HttpRequest.get(userUri)
                     .header("Authorization", "token " + token)
-                    .header("X-GitHub-Api-Version", apiVersion)
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .block();
+                    .header("X-GitHub-Api-Version", "2022-11-28")
+                    .execute().body();
             Utils.NoEmptyOrBlank(rawGithubUserInfo, "get empty user info");
             GithubUserInfo githubUserInfo = objectMapper.readValue(rawGithubUserInfo, GithubUserInfo.class);
             return Optional.ofNullable(githubUserInfo);
