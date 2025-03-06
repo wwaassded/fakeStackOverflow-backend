@@ -12,7 +12,7 @@ public class PlatfromUser {
 
     private String userEmail;
 
-    private String avaterUrl;
+    private String avatarUrl;
 
     private String userPassword;
 

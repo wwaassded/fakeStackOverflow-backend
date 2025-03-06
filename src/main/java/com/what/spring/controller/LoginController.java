@@ -5,9 +5,12 @@ import com.what.spring.Exception.StringEmptyOrNull;
 import com.what.spring.pojo.thirAuth.GithubCallBackResponse;
 import com.what.spring.pojo.thirAuth.PlatfromUser;
 import com.what.spring.pojo.Result;
+import com.what.spring.pojo.user.UserSession;
 import com.what.spring.service.thirdAuth.ThirdAuthService;
+import com.what.spring.util.Utils;
 import com.what.spring.util.thirdAuth.ThirdLoginStatus;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,10 +18,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
+import java.time.Duration;
 
 
 @RestController
@@ -40,50 +44,51 @@ public class LoginController {
     @Resource(name = "myObjectMapper")
     private ObjectMapper objectMapper;
 
+    @Resource(name = "myRedisTemplate")
+    private RedisTemplate<String, Object> redisTemplate;
+
     @GetMapping("thirdAuth/github")
     public void githubThirdAuthCallBack(@RequestParam("code") String code, HttpServletResponse response) throws IOException {
         //TODO 调用service层的组件
         //TODO 需要自定义一个相应对象
         GithubCallBackResponse githubCallBackResponse = new GithubCallBackResponse();
+        UserSession userSession = new UserSession(false);
         StringBuilder redirectUrl = new StringBuilder();
         redirectUrl.append(rootUrl).append('/').append(mainPageUrl).append('?');
         try {
             Result result = githubThirdAuthService.thirdAuthHandle(code);
             LOG.info(result.getMessage());
             if (result.getIsSuccessful()) {
-                githubCallBackResponse.setSuccess(true);
-                githubCallBackResponse.setMessage("success");
                 PlatfromUser platfromUser = (PlatfromUser) result.getObject();
                 if (platfromUser.getUserPassword() == null) {
                     githubCallBackResponse.setStatus(ThirdLoginStatus.SUCCES_NEED_CREATE);
                 } else {
                     githubCallBackResponse.setStatus(ThirdLoginStatus.SUCCES);
                 }
+                userSession.fillUserInfo(platfromUser);
+                String sessionId = Utils.getSessionId(code);
+                String sessionJson = objectMapper.writeValueAsString(userSession);
+                Cookie sessionCookie = Utils.getGlobalCookie("sessionId", sessionId, 3600);
+                response.addCookie(sessionCookie);
+                redisTemplate.opsForValue().set(sessionId, sessionJson, Duration.ofHours(3600));
             } else {
-                githubCallBackResponse.setSuccess(false);
-                githubCallBackResponse.setMessage("fail without error: " + result.getTroubleMaker());
                 githubCallBackResponse.setStatus(ThirdLoginStatus.SUCCES);
             }
         } catch (DataAccessException e) {
             LOG.error(e.getMessage());
-            githubCallBackResponse.setSuccess(false);
             if (e instanceof DuplicateKeyException de) {
-                githubCallBackResponse.setMessage("重复创建账号");
                 githubCallBackResponse.setStatus(ThirdLoginStatus.DUPLICATE);
                 // 用户重复创建关联统一第三方用户的账号 一般不会出现这个情况
             } else {
-                githubCallBackResponse.setMessage("sql出现错误 " + e.getMessage());
                 githubCallBackResponse.setStatus(ThirdLoginStatus.SQLERROR);
             }
         } catch (StringEmptyOrNull e) {
             LOG.error(e.getMessage());
-            githubCallBackResponse.setSuccess(false);
             githubCallBackResponse.setStatus(ThirdLoginStatus.GET_NO_USE_STRING);
-            githubCallBackResponse.setMessage(e.getMessage());
+        } catch (Exception e) {
+            LOG.error(e.getMessage());
         } finally {
             redirectUrl.append("status").append("=").append(githubCallBackResponse.getStatus()).append('&');
-            redirectUrl.append("message").append("=").append(githubCallBackResponse.getMessage()).append('&');
-            redirectUrl.append("isSuccess").append("=").append(githubCallBackResponse.isSuccess());
             response.sendRedirect(redirectUrl.toString());
         }
     }

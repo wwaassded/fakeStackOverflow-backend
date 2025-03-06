@@ -6,6 +6,10 @@ spring:
     username: root
     password: 2994899015
     url: jdbc:mysql://localhost:3306/stackOverflow
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
 
 
 
@@ -27,8 +31,8 @@ mybatis:
   type-aliases-package: com.what.spring.pojo
 
 frontend:
-  root: http://localhost
-  mainPage: test
+  root: http://localhost:4000
+  mainPage: /#/login
 
 server:
   port: 8888
