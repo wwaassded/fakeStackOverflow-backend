@@ -62,7 +62,7 @@ public class GithubThirdAuthService implements ThirdAuthService {
         user.setUserName(userInfo.getUserName());
         user.setThirdpartyId(userInfo.getUserId());
         user.setUserEmail(userInfo.getEmail());
-        user.setAvaterUrl(userInfo.getAvatarURL());
+        user.setAvatarUrl(userInfo.getAvatarURL());
         user.setIs_active(1);
         return user;
     }
