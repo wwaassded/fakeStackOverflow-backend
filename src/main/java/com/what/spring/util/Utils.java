@@ -22,7 +22,6 @@ public class Utils {
     static public Cookie getGlobalCookie(String key, String value, Integer maxAge) {
         Cookie sessionCookie = new Cookie(key, value);
         sessionCookie.setPath("/");
-        sessionCookie.setHttpOnly(true);
         sessionCookie.setMaxAge(maxAge);
         return sessionCookie;
     }

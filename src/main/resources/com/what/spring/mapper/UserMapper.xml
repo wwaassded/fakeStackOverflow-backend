@@ -9,7 +9,7 @@
             keyColumn="website_id">
         insert into stackoverflow_user(thirdparty_id, user_name, user_email, avatar_url, user_password, is_active,
         data_id, setting_id, is_admin)
-        VALUES (#{thirdpartyId}, #{userName}, #{userEmail}, #{avaterUrl}, #{userPassword}, #{is_active}, #{dataId},
+        VALUES (#{thirdpartyId}, #{userName}, #{userEmail}, #{avatarUrl}, #{userPassword}, #{is_active}, #{dataId},
         #{settingId}, 0);
     </insert>
 
