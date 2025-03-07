@@ -16,6 +16,8 @@ public interface UserMapper {
      */
     PlatfromUser getPlatformUserByThirdplatformId(@Param("id") int thirdPlatformId);
 
+    PlatfromUser getRawUserInfoByWebsiteId(@Param("id") int websiteId);
+
     void insertPlatformUserWithDefaultTime(PlatfromUser platfromUser);
 
 }

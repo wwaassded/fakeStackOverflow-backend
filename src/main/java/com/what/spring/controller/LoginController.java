@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
 
 
 @RestController
@@ -38,6 +40,12 @@ public class LoginController {
 
     private static final Logger LOG = LoggerFactory.getLogger(LoginController.class);
 
+    @Resource(name = "myNetWorkIOThreadPool")
+    private ThreadPoolExecutor ioThreadPool;
+
+    @Resource(name = "myCacheThreadPool")
+    private ThreadPoolExecutor cacheThreadPool;
+
     @Resource(name = "githubThirdAuthService")
     private ThirdAuthService githubThirdAuthService;
 
@@ -49,14 +57,13 @@ public class LoginController {
 
     @GetMapping("thirdAuth/github")
     public void githubThirdAuthCallBack(@RequestParam("code") String code, HttpServletResponse response) throws IOException {
-        //TODO 调用service层的组件
-        //TODO 需要自定义一个相应对象
+        Future<Result> futureResult = ioThreadPool.submit(() -> githubThirdAuthService.thirdAuthHandle(code));
         GithubCallBackResponse githubCallBackResponse = new GithubCallBackResponse();
         UserSession userSession = new UserSession(false);
         StringBuilder redirectUrl = new StringBuilder();
-        redirectUrl.append(rootUrl).append('/').append(mainPageUrl).append('?');
+        redirectUrl.append(rootUrl).append(mainPageUrl).append('?');
         try {
-            Result result = githubThirdAuthService.thirdAuthHandle(code);
+            Result result = futureResult.get();
             LOG.info(result.getMessage());
             if (result.getIsSuccessful()) {
                 PlatfromUser platfromUser = (PlatfromUser) result.getObject();
@@ -65,12 +72,13 @@ public class LoginController {
                 } else {
                     githubCallBackResponse.setStatus(ThirdLoginStatus.SUCCES);
                 }
+                githubCallBackResponse.setUserId(platfromUser.getWebsiteId());
                 userSession.fillUserInfo(platfromUser);
                 String sessionId = Utils.getSessionId(code);
                 String sessionJson = objectMapper.writeValueAsString(userSession);
                 Cookie sessionCookie = Utils.getGlobalCookie("sessionId", sessionId, 3600);
                 response.addCookie(sessionCookie);
-                redisTemplate.opsForValue().set(sessionId, sessionJson, Duration.ofHours(3600));
+                cacheThreadPool.execute(() -> redisTemplate.opsForValue().set(sessionId, sessionJson, Duration.ofHours(1)));
             } else {
                 githubCallBackResponse.setStatus(ThirdLoginStatus.SUCCES);
             }
@@ -89,6 +97,7 @@ public class LoginController {
             LOG.error(e.getMessage());
         } finally {
             redirectUrl.append("status").append("=").append(githubCallBackResponse.getStatus()).append('&');
+            redirectUrl.append("id").append("=").append(githubCallBackResponse.getUserId());
             response.sendRedirect(redirectUrl.toString());
         }
     }

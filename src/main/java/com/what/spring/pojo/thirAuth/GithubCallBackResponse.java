@@ -6,4 +6,5 @@ import lombok.Data;
 @Data
 public class GithubCallBackResponse {
     private ThirdLoginStatus status;
+    private Integer userId;
 }
