@@ -17,4 +17,16 @@
         select * from stackoverflow_user where thirdparty_id=#{id};
     </select>
 
+    <select id="getRawUserInfoByWebsiteId" resultType="PlatfromUser">
+        select website_id,
+        thirdparty_id,
+        user_name,
+        user_email,
+        avatar_url,
+        is_active,
+        created_at
+        from stackoverflow_user
+        where website_id =#{id};
+    </select>
+
 </mapper>
