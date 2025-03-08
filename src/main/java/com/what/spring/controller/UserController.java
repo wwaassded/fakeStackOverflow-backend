@@ -15,17 +15,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 
 @RestController
-@RequestMapping("user")
+@RequestMapping("user/{id}")
 public class UserController {
 
     private final UserService userService;
@@ -42,7 +39,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("{id}")
+    @GetMapping
     public void getUserRawInfoById(@PathVariable("id") Integer websiteId, HttpServletRequest httpServletRequest, HttpServletResponse response) {
         UserRawInfoResponse infoResponse = new UserRawInfoResponse();
         try {

@@ -32,6 +32,7 @@ public class UserService {
         for (var cookie : httpServletRequest.getCookies()) {
             if (cookie.getName().equals("sessionId")) {
                 String sessionId = cookie.getValue();
+                //fixme 读取出来的应该是string类型 应该通过json转化一下
                 Optional<UserSession> optionalUserSession = Optional.ofNullable((UserSession) redisTemplate.opsForValue().get(sessionId));
                 // 活跃用户刷新缓存的时间
                 optionalUserSession.ifPresent(userSession -> {

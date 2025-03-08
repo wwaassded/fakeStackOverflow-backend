@@ -18,17 +18,4 @@ public class FakeStackOverflowApplication {
         SpringApplication.run(FakeStackOverflowApplication.class, args);
     }
 
-
-    @Bean
-    public CorsFilter corsFilter() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("*");
-        configuration.setAllowCredentials(true);
-        configuration.addAllowedMethod("*");
-        configuration.addAllowedHeader("*");
-        configuration.addExposedHeader("*");
-        UrlBasedCorsConfigurationSource corsConfigurationSource = new UrlBasedCorsConfigurationSource();
-        corsConfigurationSource.registerCorsConfiguration("/**", configuration);
-        return new CorsFilter(corsConfigurationSource);
-    }
 }

@@ -74,11 +74,11 @@ public class LoginController {
                 }
                 githubCallBackResponse.setUserId(platfromUser.getWebsiteId());
                 userSession.fillUserInfo(platfromUser);
+                String jsonSession = objectMapper.writeValueAsString(userSession);
                 String sessionId = Utils.getSessionId(code);
-                String sessionJson = objectMapper.writeValueAsString(userSession);
                 Cookie sessionCookie = Utils.getGlobalCookie("sessionId", sessionId, 3600);
                 response.addCookie(sessionCookie);
-                cacheThreadPool.execute(() -> redisTemplate.opsForValue().set(sessionId, sessionJson, Duration.ofHours(1)));
+                cacheThreadPool.execute(() -> redisTemplate.opsForValue().set(sessionId, jsonSession, Duration.ofHours(1)));
             } else {
                 githubCallBackResponse.setStatus(ThirdLoginStatus.SUCCES);
             }
