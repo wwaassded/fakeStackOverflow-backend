@@ -2,6 +2,8 @@ package com.what.spring.pojo;
 
 import lombok.Data;
 
+import java.lang.reflect.Method;
+
 @Data
 public class Result {
     private Object object;
@@ -15,5 +17,11 @@ public class Result {
         this.isSuccessful = false;
         this.message = message;
         this.troubleMaker = troubleMaker.getName();
+    }
+
+    public void fillSuccessFulResult(Object o, String message) {
+        this.object = o;
+        this.isSuccessful = true;
+        this.message = message;
     }
 }
