@@ -1,5 +1,6 @@
 package com.what.spring.controller;
 
+import cn.hutool.log.Log;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.what.spring.Exception.StringEmptyOrNull;
 import com.what.spring.pojo.thirAuth.GithubCallBackResponse;
@@ -11,6 +12,7 @@ import com.what.spring.util.Utils;
 import com.what.spring.util.thirdAuth.ThirdLoginStatus;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +58,10 @@ public class LoginController {
     private RedisTemplate<String, Object> redisTemplate;
 
     @GetMapping("thirdAuth/github")
-    public void githubThirdAuthCallBack(@RequestParam("code") String code, HttpServletResponse response) throws IOException {
+    public void githubThirdAuthCallBack(@RequestParam("code") String code, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        if (request.getAttribute("userSession") != null) {
+            LOG.error(request.getAttribute("userSession").toString());
+        }
         Future<Result> futureResult = ioThreadPool.submit(() -> githubThirdAuthService.thirdAuthHandle(code));
         GithubCallBackResponse githubCallBackResponse = new GithubCallBackResponse();
         UserSession userSession = new UserSession(false);

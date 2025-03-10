@@ -6,7 +6,6 @@ import com.what.spring.pojo.thirAuth.PlatfromUser;
 import com.what.spring.pojo.user.RawUser;
 import com.what.spring.pojo.user.UserRawInfoResponse;
 import com.what.spring.pojo.user.UserSession;
-import com.what.spring.service.user.SolveSessionCache;
 import com.what.spring.service.user.UserService;
 import com.what.spring.util.Utils;
 import jakarta.annotation.Resource;
@@ -16,34 +15,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadPoolExecutor;
 
 @RestController
-@RequestMapping("user/{id}")
+@RequestMapping("user")
 public class UserController {
 
     @Resource
     private UserService userService;
 
-    @Resource
-    private SolveSessionCache solveSessionCache;
-
     private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
-
-    @Resource(name = "myCacheThreadPool")
-    private ThreadPoolExecutor cacheThreadPool;
 
     @Resource(name = "myObjectMapper")
     private ObjectMapper objectMapper;
 
     @GetMapping
-    public void getUserRawInfoById(@PathVariable("id") Integer websiteId, HttpServletRequest httpServletRequest, HttpServletResponse response) {
+    public void getUserRawInfoById(HttpServletRequest httpServletRequest, HttpServletResponse response) {
         UserRawInfoResponse infoResponse = new UserRawInfoResponse();
         try {
-            Future<Optional<UserSession>> futureWebSiteId = cacheThreadPool.submit(() -> solveSessionCache.getWebSiteIdFromSession(httpServletRequest));
-            Result result = userService.getRawUserInfo(websiteId, futureWebSiteId);
+            UserSession userSession = (UserSession) httpServletRequest.getAttribute("userSession");
+            Result result = userService.getRawUserInfo(userSession);
             if (result.getIsSuccessful()) {
                 if (result.getObject() instanceof PlatfromUser rawUer) {
                     RawUser user = new RawUser(rawUer);
