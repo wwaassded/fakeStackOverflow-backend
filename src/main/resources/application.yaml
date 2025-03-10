@@ -1,4 +1,52 @@
 spring:
   application:
     name: fakeStackOverflow
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 2994899015
+    url: jdbc:mysql://localhost:3306/stackOverflow
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
 
+
+
+thirdauthconfig:
+  github:
+    tokenUri: https://github.com/login/oauth/access_token
+    userUri: https://api.github.com/user
+    emailUri: https://api.github.com/user/emails
+    apiVersion: 2022-11-28
+    clientId: Ov23lieK9SUhmawxB2jl
+    clientSecret: 0be98465ee3aece0080bb834fee536a95fb8bb51
+
+
+mybatis:
+  configuration:
+    auto-mapping-behavior: full
+    map-underscore-to-camel-case: true
+  mapper-locations: classpath/com/what/spring/mapper/**.xml
+  type-aliases-package: com.what.spring.pojo
+
+frontend:
+  root: http://localhost:4001
+  mainPage: /#/index
+
+server:
+  port: 8888
+
+thread-pool:
+  network-io:
+    prefix: network-io
+    corethread-number: 20
+    maxthread-number: 40
+    keepalive-time: 60
+    blockque-len: 100
+  cache:
+    prefix: cache
+    corethread-number: 10
+    maxthread-number: 20
+    keepalive-time: 60
+    blockque-len: 100

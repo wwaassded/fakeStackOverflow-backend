@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.what.spring.mapper.UserMapper">
+
+    <insert id="insertPlatformUserWithDefaultTime" useGeneratedKeys="true" keyProperty="websiteId"
+            keyColumn="website_id">
+        insert into stackoverflow_user(thirdparty_id, user_name, user_email, avatar_url, user_password, is_active,
+        data_id, setting_id, is_admin)
+        VALUES (#{thirdpartyId}, #{userName}, #{userEmail}, #{avatarUrl}, #{userPassword}, #{is_active}, #{dataId},
+        #{settingId}, 0);
+    </insert>
+
+    <select id="getPlatformUserByThirdplatformId" resultType="PlatfromUser">
+        select * from stackoverflow_user where thirdparty_id=#{id};
+    </select>
+
+    <select id="getRawUserInfoByWebsiteId" resultType="PlatfromUser">
+        select website_id,
+        thirdparty_id,
+        user_name,
+        user_email,
+        avatar_url,
+        is_active,
+        created_at
+        from stackoverflow_user
+        where website_id =#{id};
+    </select>
+
+</mapper>
