@@ -15,7 +15,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import java.util.concurrent.ConcurrentHashMap;
 
 @SuppressWarnings("NullableProblems")
-@Component
+@Component("sessionPermissionsInterceptor")
 public class SessionPermissionsInterceptor implements HandlerInterceptor {
 
     @Resource(name = "sessionCache")
@@ -30,9 +30,10 @@ public class SessionPermissionsInterceptor implements HandlerInterceptor {
     private static final Logger LOG = LoggerFactory.getLogger(SessionPermissionsInterceptor.class);
 
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        LOG.info("拦截器成功工作");
+        LOG.info("拦截器开始工作");
         Cookie[] cookies = request.getCookies();
         if (cookies == null) {
+            LOG.info("拦截器失败");
             return false;
         }
         for (var cookie : cookies) {
@@ -43,15 +44,18 @@ public class SessionPermissionsInterceptor implements HandlerInterceptor {
                 } else {
                     String userSessionJson = (String) redisTemplate.opsForValue().get(sessionId);
                     if (userSessionJson == null) {
+                        LOG.info("拦截器失败");
                         return false;
                     }
                     UserSession userSession = objectMapper.readValue(userSessionJson, UserSession.class);
                     sessionHashMap.put(sessionId, userSession);
                     request.setAttribute("userSession", userSession);
                 }
+                LOG.info("拦截器成功喽");
                 return true;
             }
         }
+        LOG.info("拦截器失败");
         return false;
     }
 }
