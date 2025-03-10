@@ -1,11 +1,10 @@
 package com.what.spring.util;
 
-import cn.hutool.log.Log;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import cn.hutool.crypto.SecureUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.what.spring.Exception.FailToWriteErrorMessageToResponse;
 import com.what.spring.Exception.StringEmptyOrNull;
-import com.what.spring.controller.UserController;
+import com.what.spring.pojo.user.UserSession;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -13,13 +12,14 @@ import org.slf4j.LoggerFactory;
 
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-
-import static cn.hutool.core.util.StrUtil.uuid;
 
 public class Utils {
 
     private static final Logger LOG = LoggerFactory.getLogger(Utils.class);
+
+    private static final int magicNumber = 4;
+    private static final String magicPrefix = "ELF";
+    private static final String magicSufix = "*&^%";
 
     static public void NoEmptyOrBlank(String str, String message) throws StringEmptyOrNull {
         if (str == null || str.isBlank()) {
@@ -27,8 +27,8 @@ public class Utils {
         }
     }
 
-    static public String getSessionId(String code) {
-        return LocalDateTime.now() + uuid() + code;
+    static public String getSessionId(UserSession userSession) {
+        return SecureUtil.md5(magicPrefix + userSession.getUserId().toString() + (userSession.getThirdPlatformUserId().toString() + magicSufix).substring(magicNumber));
     }
 
     static public Cookie getGlobalCookie(String key, String value, Integer maxAge) {
