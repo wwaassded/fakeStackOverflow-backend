@@ -6,6 +6,7 @@ import com.what.spring.pojo.thirAuth.PlatfromUser;
 import com.what.spring.pojo.user.RawUser;
 import com.what.spring.pojo.user.UserRawInfoResponse;
 import com.what.spring.pojo.user.UserSession;
+import com.what.spring.service.user.SolveSessionCache;
 import com.what.spring.service.user.UserService;
 import com.what.spring.util.Utils;
 import jakarta.annotation.Resource;
@@ -13,8 +14,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -25,7 +24,11 @@ import java.util.concurrent.ThreadPoolExecutor;
 @RequestMapping("user/{id}")
 public class UserController {
 
-    private final UserService userService;
+    @Resource
+    private UserService userService;
+
+    @Resource
+    private SolveSessionCache solveSessionCache;
 
     private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
 
@@ -35,16 +38,12 @@ public class UserController {
     @Resource(name = "myObjectMapper")
     private ObjectMapper objectMapper;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
-
     @GetMapping
     public void getUserRawInfoById(@PathVariable("id") Integer websiteId, HttpServletRequest httpServletRequest, HttpServletResponse response) {
         UserRawInfoResponse infoResponse = new UserRawInfoResponse();
         try {
-            Future<Optional<UserSession>> futureWebSiteId = cacheThreadPool.submit(() -> userService.getWebSiteIdFromSession(httpServletRequest));
-            Result result = userService.getRawUserInfo(websiteId, httpServletRequest, futureWebSiteId);
+            Future<Optional<UserSession>> futureWebSiteId = cacheThreadPool.submit(() -> solveSessionCache.getWebSiteIdFromSession(httpServletRequest));
+            Result result = userService.getRawUserInfo(websiteId, futureWebSiteId);
             if (result.getIsSuccessful()) {
                 if (result.getObject() instanceof PlatfromUser rawUer) {
                     RawUser user = new RawUser(rawUer);

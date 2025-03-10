@@ -19,6 +19,7 @@ public class UserSession {
         this.avaterUrl = user.getAvatarUrl();
         this.userEmail = user.getUserEmail();
         this.userName = user.getUserName();
+        this.thirdPlatformUserId = user.getThirdpartyId();
     }
 
     public UserSession() {
