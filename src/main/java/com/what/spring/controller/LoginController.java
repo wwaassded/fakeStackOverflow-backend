@@ -6,6 +6,7 @@ import com.what.spring.Exception.StringEmptyOrNull;
 import com.what.spring.pojo.thirAuth.GithubCallBackResponse;
 import com.what.spring.pojo.thirAuth.PlatfromUser;
 import com.what.spring.pojo.Result;
+import com.what.spring.pojo.user.SessionCounter;
 import com.what.spring.pojo.user.UserSession;
 import com.what.spring.service.thirdAuth.ThirdAuthService;
 import com.what.spring.util.Utils;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -57,6 +59,9 @@ public class LoginController {
     @Resource(name = "myRedisTemplate")
     private RedisTemplate<String, Object> redisTemplate;
 
+    @Resource(name = "sessionCache")
+    private ConcurrentHashMap<String, SessionCounter> concurrentHashMap;
+
     @GetMapping("thirdAuth/github")
     public void githubThirdAuthCallBack(@RequestParam("code") String code, HttpServletRequest request, HttpServletResponse response) throws IOException {
         if (request.getAttribute("userSession") != null) {
@@ -80,10 +85,11 @@ public class LoginController {
                 githubCallBackResponse.setUserId(platfromUser.getWebsiteId());
                 userSession.fillUserInfo(platfromUser);
                 String jsonSession = objectMapper.writeValueAsString(userSession);
-                String sessionId = Utils.getSessionId(code);
+                String sessionId = Utils.getSessionId(userSession);
                 Cookie sessionCookie = Utils.getGlobalCookie("sessionId", sessionId, 3600);
                 response.addCookie(sessionCookie);
                 cacheThreadPool.execute(() -> redisTemplate.opsForValue().set(sessionId, jsonSession, Duration.ofHours(1)));
+                concurrentHashMap.computeIfAbsent(sessionId, k -> new SessionCounter(userSession, 1));
             } else {
                 githubCallBackResponse.setStatus(ThirdLoginStatus.SUCCES);
             }
