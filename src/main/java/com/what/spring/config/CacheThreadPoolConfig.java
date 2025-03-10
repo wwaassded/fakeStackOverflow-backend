@@ -38,6 +38,7 @@ public class CacheThreadPoolConfig {
         executor.setKeepAliveSeconds(keepaliveTime);
         executor.setQueueCapacity(blockqueLen);
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+        executor.initialize();
         return executor.getThreadPoolExecutor();
     }
 }

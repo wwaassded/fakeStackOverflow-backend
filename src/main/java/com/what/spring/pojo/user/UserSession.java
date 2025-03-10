@@ -19,6 +19,7 @@ public class UserSession {
         this.avaterUrl = user.getAvatarUrl();
         this.userEmail = user.getUserEmail();
         this.userName = user.getUserName();
+        this.thirdPlatformUserId = user.getThirdpartyId();
     }
 
     public UserSession() {
@@ -29,6 +30,7 @@ public class UserSession {
         this.lastAccessedTime = this.sessionCreationTime;
     }
 
+    //fixme session中存储了太多无用的数据
     private String sessionId;
     private Integer userId;
     private Integer thirdPlatformUserId;
