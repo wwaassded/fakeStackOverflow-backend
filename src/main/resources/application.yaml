@@ -11,7 +11,11 @@ spring:
       host: 127.0.0.1
       port: 6379
 
-
+redis:
+  cache:
+    user-session:
+      time: 60
+      frequency: 20
 
 thirdauthconfig:
   github:

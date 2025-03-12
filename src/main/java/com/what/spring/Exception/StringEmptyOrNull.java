@@ -1,25 +1,26 @@
 package com.what.spring.Exception;
 
-public class StringEmptyOrNull extends BaseException {
-
+public class StringEmptyOrNull extends StackOverflowBaseException {
     public StringEmptyOrNull() {
+        super();
     }
 
-    public StringEmptyOrNull(String message) {
-        super(message);
+    public StringEmptyOrNull(String resultCode, String resultMsg) {
+        super(resultCode, resultMsg);
     }
 
-    public StringEmptyOrNull(String message, Throwable cause) {
-        super(message, cause);
+    @Override
+    public Throwable fillInStackTrace() {
+        return super.fillInStackTrace();
     }
 
-    public StringEmptyOrNull(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+    @Override
+    public String getResultCode() {
+        return super.getResultCode();
     }
 
-    public StringEmptyOrNull(Throwable cause) {
-        super(cause);
+    @Override
+    public String getResultMsg() {
+        return super.getResultMsg();
     }
-
-
 }

@@ -1,8 +1,8 @@
 package com.what.spring.controller;
 
-import cn.hutool.log.Log;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.what.spring.Exception.StringEmptyOrNull;
+import com.what.spring.component.util.RedisExpirationListener;
 import com.what.spring.pojo.thirAuth.GithubCallBackResponse;
 import com.what.spring.pojo.thirAuth.PlatfromUser;
 import com.what.spring.pojo.Result;
@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.time.Duration;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -59,8 +58,8 @@ public class LoginController {
     @Resource(name = "myRedisTemplate")
     private RedisTemplate<String, Object> redisTemplate;
 
-    @Resource(name = "sessionCache")
-    private ConcurrentHashMap<String, SessionCounter> concurrentHashMap;
+    @Resource(name = "redisExpirationListener")
+    private RedisExpirationListener redisExpirationListener;
 
     @GetMapping("thirdAuth/github")
     public void githubThirdAuthCallBack(@RequestParam("code") String code, HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -89,7 +88,7 @@ public class LoginController {
                 Cookie sessionCookie = Utils.getGlobalCookie("sessionId", sessionId, 3600);
                 response.addCookie(sessionCookie);
                 cacheThreadPool.execute(() -> redisTemplate.opsForValue().set(sessionId, jsonSession, Duration.ofHours(1)));
-                concurrentHashMap.computeIfAbsent(sessionId, k -> new SessionCounter(userSession, 1));
+                redisExpirationListener.getSessionCache().computeIfAbsent(sessionId, k -> new SessionCounter(userSession, 1));
             } else {
                 githubCallBackResponse.setStatus(ThirdLoginStatus.SUCCES);
             }

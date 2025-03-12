@@ -11,15 +11,4 @@ import java.util.concurrent.locks.ReentrantLock;
 
 @Configuration
 public class UtilConfig {
-    @Bean(name = "sessionCache")
-    public ConcurrentHashMap<String, SessionCounter> sessionCache() {
-        //TODO 启动式可以考虑将多个用户session加载进来
-        return new ConcurrentHashMap<>();
-    }
-
-    @Bean(name = "ReentrantLockCache")
-    public ConcurrentHashMap<String, ReentrantLock> reentrantLockCache() {
-        //TODO 启动式可以考虑将多个用户session加载进来
-        return new ConcurrentHashMap<>();
-    }
 }

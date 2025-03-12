@@ -2,7 +2,6 @@ package com.what.spring.util;
 
 import cn.hutool.crypto.SecureUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.what.spring.Exception.FailToWriteErrorMessageToResponse;
 import com.what.spring.Exception.StringEmptyOrNull;
 import com.what.spring.pojo.user.UserSession;
 import jakarta.servlet.http.Cookie;
@@ -18,12 +17,12 @@ public class Utils {
     private static final Logger LOG = LoggerFactory.getLogger(Utils.class);
 
     private static final int magicNumber = 4;
-    private static final String magicPrefix = "ELF";
+    private static final String magicPrefix = "SessionELF";
     private static final String magicSufix = "*&^%";
 
     static public void NoEmptyOrBlank(String str, String message) throws StringEmptyOrNull {
         if (str == null || str.isBlank()) {
-            throw new StringEmptyOrNull(message);
+            throw new StringEmptyOrNull("-1", message);
         }
     }
 
@@ -52,7 +51,7 @@ public class Utils {
                 response.getWriter().write("{\"isSuccess\":false,\"message\":\"json io error\"}");
             } catch (IOException ee) {
                 LOG.error(ee.getMessage());
-                throw new FailToWriteErrorMessageToResponse("无法向客户端返回错误信息");
+                //TODO
             }
         }
     }
