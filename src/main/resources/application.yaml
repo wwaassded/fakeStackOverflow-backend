@@ -1,4 +1,18 @@
 spring:
+  mail:
+    default-encoding: UTF-8
+    host: smtp.gmail.com
+    port: 587
+    protocol: smtp
+    test-connection: false
+    username: wwssd507@gmail.com
+    password: vhiemhbkuwbfgtlo
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
   application:
     name: fakeStackOverflow
   datasource:
@@ -11,7 +25,15 @@ spring:
       host: 127.0.0.1
       port: 6379
 
+mail:
+  from: ${spring.mail.username}@${mail.domain}
+  domain: gmail.com
 
+redis:
+  cache:
+    user-session:
+      time: 60
+      frequency: 20
 
 thirdauthconfig:
   github:

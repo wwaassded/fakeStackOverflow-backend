@@ -1,12 +1,16 @@
 package com.what.spring.Exception;
 
-public class StringEmptyOrNull extends StackOverflowBaseException {
-    public StringEmptyOrNull() {
+public class IOExceptionReadingFromRequestBody extends StackOverflowBaseException {
+    public IOExceptionReadingFromRequestBody() {
         super();
     }
 
-    public StringEmptyOrNull(String resultCode, String resultMsg) {
+    public IOExceptionReadingFromRequestBody(String resultCode, String resultMsg) {
         super(resultCode, resultMsg);
+    }
+
+    public IOExceptionReadingFromRequestBody(String resultCode, String resultMsg, Throwable cause) {
+        super(resultCode, resultMsg, cause);
     }
 
     @Override
