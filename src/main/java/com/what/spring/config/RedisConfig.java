@@ -22,6 +22,7 @@ public class RedisConfig {
         template.setConnectionFactory(connectionFactory);
         template.setKeySerializer(new StringRedisSerializer());
         template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+        template.afterPropertiesSet();
         return template;
     }
 
@@ -30,12 +31,15 @@ public class RedisConfig {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         container.addMessageListener(listenerAdapter, PatternTopic.of("__keyevent@0__:expired"));
+        container.setTopicSerializer(new StringRedisSerializer());
         return container;
     }
 
     @Bean
     MessageListenerAdapter listenerAdapter(RedisExpirationListener redisExpirationListener) {
-        return new MessageListenerAdapter(redisExpirationListener);
+        MessageListenerAdapter adapter = new MessageListenerAdapter(redisExpirationListener);
+        adapter.setSerializer(new StringRedisSerializer());
+        return adapter;
     }
 
 }
