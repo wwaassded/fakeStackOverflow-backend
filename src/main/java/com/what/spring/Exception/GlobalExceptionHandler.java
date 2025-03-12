@@ -5,6 +5,7 @@ import com.what.spring.pojo.ResultResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -35,6 +36,20 @@ public class GlobalExceptionHandler {
         LOG.error("空指针错误", exception);
         return ResultResponse.error(ExceptionEnum.BODY_NOT_MATCH);
     }
+
+    @ExceptionHandler(value = MethodArgumentNotValidException.class)
+    @ResponseBody
+    public ResultResponse exceptionHandler(HttpServletRequest request, MethodArgumentNotValidException exception) {
+        ResultResponse response = new ResultResponse();
+        response.setResultCode(ExceptionEnum.BODY_NOT_MATCH.getResultCode());
+        StringBuilder stringBuilder = new StringBuilder();
+        exception.getBindingResult().getAllErrors().forEach(e -> {
+            stringBuilder.append(e.getDefaultMessage());
+        });
+        response.setResultMsg(stringBuilder.toString());
+        return response;
+    }
+
 
     @ExceptionHandler(value = JsonProcessingException.class)
     @ResponseBody

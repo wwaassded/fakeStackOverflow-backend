@@ -3,6 +3,7 @@ package com.what.spring.util;
 import cn.hutool.crypto.SecureUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.what.spring.Exception.StringEmptyOrNull;
+import com.what.spring.pojo.user.NameAndPassword;
 import com.what.spring.pojo.user.UserSession;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,8 +18,10 @@ public class Utils {
     private static final Logger LOG = LoggerFactory.getLogger(Utils.class);
 
     private static final int magicNumber = 4;
-    private static final String magicPrefix = "SessionELF";
+    private static final String SessionmagicPrefix = "SessionELF";
+    private static final String NAPMagicPrefix = "NAPELF";
     private static final String magicSufix = "*&^%";
+
 
     static public void NoEmptyOrBlank(String str, String message) throws StringEmptyOrNull {
         if (str == null || str.isBlank()) {
@@ -27,7 +30,11 @@ public class Utils {
     }
 
     static public String getSessionId(UserSession userSession) {
-        return SecureUtil.md5(magicPrefix + userSession.getUserId().toString() + (userSession.getThirdPlatformUserId().toString() + magicSufix).substring(magicNumber));
+        return SecureUtil.md5(SessionmagicPrefix + userSession.getUserId().toString() + (userSession.getThirdPlatformUserId().toString() + magicSufix).substring(magicNumber));
+    }
+
+    static public String getNAPKey(NameAndPassword nameAndPassword) {
+        return SecureUtil.md5(NAPMagicPrefix + nameAndPassword.getName() + nameAndPassword.getPassword().substring(magicNumber) + nameAndPassword.getEmail());
     }
 
     static public Cookie getGlobalCookie(String key, String value, Integer maxAge) {
@@ -54,5 +61,9 @@ public class Utils {
                 //TODO
             }
         }
+    }
+
+    static public String md5(String code) {
+        return SecureUtil.md5(code);
     }
 }

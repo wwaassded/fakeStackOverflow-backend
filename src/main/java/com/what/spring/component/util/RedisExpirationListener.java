@@ -21,7 +21,7 @@ public class RedisExpirationListener implements MessageListener {
     @Override
     public void onMessage(Message message, byte[] pattern) {
         String expiredKey = message.toString();
-        if (expiredKey.startsWith("sessionELF")) {
+        if (expiredKey.startsWith("SessionELF")) {
             System.out.println("Session key expired: " + expiredKey);
             sessionCache.remove(expiredKey);
         }
