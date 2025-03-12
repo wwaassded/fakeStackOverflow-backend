@@ -1,6 +1,7 @@
 package com.what.spring.Exception;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.github.dozermapper.core.MappingException;
 import com.what.spring.pojo.ResultResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
@@ -56,6 +57,13 @@ public class GlobalExceptionHandler {
     public ResultResponse exceptionHandler(HttpServletRequest request, JsonProcessingException exception) {
         LOG.error("jackson解析json结构错误", exception);
         return ResultResponse.error(ExceptionEnum.JSON_PARSE_ERROR);
+    }
+
+    @ExceptionHandler(value = MappingException.class)
+    @ResponseBody
+    public ResultResponse exceptionHandler(HttpServletRequest request, MappingException exception) {
+        LOG.error("dozer mapper 映射出现问题", exception);
+        return ResultResponse.error(ExceptionEnum.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(value = Exception.class)
