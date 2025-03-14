@@ -1,9 +1,11 @@
 package com.what.spring.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.what.spring.DTO.Validate;
 import com.what.spring.pojo.user.NameAndPassword;
 import com.what.spring.service.user.LogupService;
 import jakarta.annotation.Resource;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -23,10 +25,9 @@ public class LogupController {
     private LogupService logupService;
 
     @PostMapping
-    public void logupHandler(@Valid @RequestBody NameAndPassword nameAndPassword, HttpServletRequest request, HttpServletResponse response) {
+    public void logupHandler(@Valid @RequestBody NameAndPassword nameAndPassword, HttpServletRequest request, HttpServletResponse response) throws MessagingException {
         nameAndPassword.getMd5();
         String key = logupService.cacheNameAndPassword(nameAndPassword);
-        logupService.emailHandler(nameAndPassword.getEmail(), key);
-        // TODO 进行邮箱验证逻辑
+        logupService.emailHandler(nameAndPassword.getEmail(), Validate.class, key);
     }
 }

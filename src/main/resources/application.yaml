@@ -1,4 +1,8 @@
 spring:
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/
+    suffix: .html
   mail:
     default-encoding: UTF-8
     host: smtp.gmail.com
