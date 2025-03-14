@@ -9,6 +9,7 @@ public enum ExceptionEnum implements BaseErrorInfoInterface {
     NOT_FOUND("4004", "未找到该资源!"),
     INTERNAL_SERVER_ERROR("5000", "服务器内部错误!"),
     JSON_PARSE_ERROR("50001", "服务器内部解析JSON结构出错"),
+    EMAIL_SENDING_ERROR("50002", "发送邮件时发生错误"),
     SERVER_BUSY("5003", "服务器正忙，请稍后再试!");
 
     private final String resultCode;

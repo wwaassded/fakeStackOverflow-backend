@@ -3,6 +3,7 @@ package com.what.spring.Exception;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.dozermapper.core.MappingException;
 import com.what.spring.pojo.ResultResponse;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,6 +65,13 @@ public class GlobalExceptionHandler {
     public ResultResponse exceptionHandler(HttpServletRequest request, MappingException exception) {
         LOG.error("dozer mapper 映射出现问题", exception);
         return ResultResponse.error(ExceptionEnum.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(value = MessagingException.class)
+    @ResponseBody
+    public ResultResponse exceptionHandler(MessagingException exception) {
+        LOG.error("邮件发送问题 ", exception);
+        return ResultResponse.error(ExceptionEnum.EMAIL_SENDING_ERROR.getResultCode(), ExceptionEnum.EMAIL_SENDING_ERROR.getResultMsg() + exception.getMessage());
     }
 
     @ExceptionHandler(value = Exception.class)
