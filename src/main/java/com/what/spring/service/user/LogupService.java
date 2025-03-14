@@ -1,5 +1,6 @@
 package com.what.spring.service.user;
 
+import com.what.spring.DTO.Validate;
 import com.what.spring.pojo.MailDTO;
 import com.what.spring.pojo.user.NameAndPassword;
 import com.what.spring.service.email.MailService;
@@ -10,10 +11,7 @@ import jakarta.mail.MessagingException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -35,16 +33,11 @@ public class LogupService {
         return key;
     }
 
-    public void emailHandler(String email, Class<?> Emailclass, String key) throws MessagingException {
+    public void sendValidateEmial(Validate validate) throws MessagingException {
         MailDTO mailDTO = new MailDTO();
-        mailDTO.setTo(new String[]{email});
-        Map<String, Object> contex = new HashMap<>();
-        Object keyObject = EmailUtils.getEmailKeyObjectAndInit(Emailclass);
-        if (keyObject == null) {
-            throw new MessagingException("无法获取邮件参数对象 未知错误");
-        }
-        String[] split = Emailclass.getName().split("\\.");
-        String templateKey = split[split.length - 1].toLowerCase();
+        mailDTO.setTo(new String[]{validate.getEmail()});
+        Map<String, Object> contex = EmailUtils.getEmailKeyContextFromObject(validate);
+        String templateKey = validate.getClass().getName().toLowerCase();
         mailService.sendMimeMessage(mailDTO, contex, templateKey);
     }
 }

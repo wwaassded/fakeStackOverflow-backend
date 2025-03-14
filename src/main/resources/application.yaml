@@ -59,6 +59,9 @@ mybatis:
 frontend:
   root: http://localhost:4001
   mainPage: /#/index
+backend:
+  root: http://localhost:8888
+  logup-verification: /logup/verification?key=
 
 server:
   port: 8888
