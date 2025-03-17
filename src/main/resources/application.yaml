@@ -81,6 +81,7 @@ thread-pool:
     blockque-len: 100
 
 nginx:
+  localdir: /Users/whatyi/Pictures/staticProperties/
   root: http://localhost:8080/downloads
   avatar:
     root: /avatar/
