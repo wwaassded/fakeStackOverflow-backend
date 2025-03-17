@@ -24,7 +24,6 @@ public class UserSession {
 
     public UserSession() {
         this.isAdmin = false;
-        this.sessionId = uuid();
         this.needDelete = false;
         this.sessionCreationTime = LocalDateTime.now();
         this.lastAccessedTime = this.sessionCreationTime;

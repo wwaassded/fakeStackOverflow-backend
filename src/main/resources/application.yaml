@@ -79,3 +79,9 @@ thread-pool:
     maxthread-number: 20
     keepalive-time: 60
     blockque-len: 100
+
+nginx:
+  root: http://localhost:8080/downloads
+  avatar:
+    root: /avatar/
+    defaultAvatar: defaultAvatar.png
