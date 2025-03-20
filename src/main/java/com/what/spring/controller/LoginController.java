@@ -9,6 +9,7 @@ import com.what.spring.pojo.Result;
 import com.what.spring.pojo.user.SessionCounter;
 import com.what.spring.pojo.user.UserSession;
 import com.what.spring.service.thirdAuth.ThirdAuthService;
+import com.what.spring.service.user.SessionService;
 import com.what.spring.util.Utils;
 import com.what.spring.util.thirdAuth.ThirdLoginStatus;
 import jakarta.annotation.Resource;
@@ -17,15 +18,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.time.Duration;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -46,20 +46,14 @@ public class LoginController {
     @Resource(name = "myNetWorkIOThreadPool")
     private ThreadPoolExecutor ioThreadPool;
 
-    @Resource(name = "myCacheThreadPool")
-    private ThreadPoolExecutor cacheThreadPool;
-
     @Resource(name = "githubThirdAuthService")
     private ThirdAuthService githubThirdAuthService;
 
-    @Resource(name = "myObjectMapper")
-    private ObjectMapper objectMapper;
-
-    @Resource(name = "myRedisTemplate")
-    private RedisTemplate<String, Object> redisTemplate;
-
     @Resource(name = "redisExpirationListener")
     private RedisExpirationListener redisExpirationListener;
+
+    @Autowired
+    private SessionService sessionService;
 
     @GetMapping("thirdAuth/github")
     public void githubThirdAuthCallBack(@RequestParam("code") String code, HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -68,7 +62,6 @@ public class LoginController {
         }
         Future<Result> futureResult = ioThreadPool.submit(() -> githubThirdAuthService.thirdAuthHandle(code));
         GithubCallBackResponse githubCallBackResponse = new GithubCallBackResponse();
-        UserSession userSession = new UserSession(false);
         StringBuilder redirectUrl = new StringBuilder();
         redirectUrl.append(rootUrl).append(mainPageUrl).append('?');
         try {
@@ -82,13 +75,8 @@ public class LoginController {
                     githubCallBackResponse.setStatus(ThirdLoginStatus.SUCCES);
                 }
                 githubCallBackResponse.setUserId(platfromUser.getWebsiteId());
-                userSession.fillUserInfo(platfromUser);
-                String jsonSession = objectMapper.writeValueAsString(userSession);
-                String sessionId = Utils.getSessionId(userSession);
-                Cookie sessionCookie = Utils.getGlobalCookie("sessionId", sessionId, 3600);
-                response.addCookie(sessionCookie);
-                cacheThreadPool.execute(() -> redisTemplate.opsForValue().set(sessionId, jsonSession, Duration.ofHours(1)));
-                redisExpirationListener.getSessionCache().computeIfAbsent(sessionId, k -> new SessionCounter(userSession, 1));
+                UserSession userSession = sessionService.userSessionHandle(platfromUser, response);
+                redisExpirationListener.getSessionCache().computeIfAbsent(userSession.getSessionId(), _ -> new SessionCounter(userSession, 1));
             } else {
                 githubCallBackResponse.setStatus(ThirdLoginStatus.SUCCES);
             }

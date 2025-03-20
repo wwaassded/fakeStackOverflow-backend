@@ -1,6 +1,8 @@
 package com.what.spring.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.what.spring.DTO.Validate;
+import com.what.spring.pojo.ResultResponse;
 import com.what.spring.pojo.user.NameAndPassword;
 import com.what.spring.service.user.LogupService;
 import jakarta.annotation.Resource;
@@ -11,7 +13,6 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
 
 @RequestMapping("logup")
 @RestController
@@ -37,7 +38,19 @@ public class LogupController {
     }
 
     @PostMapping("verification")
-    public void logupVerification(@RequestParam String key) {
-
+    public ResultResponse logupVerification(@RequestParam String key, HttpServletRequest request, HttpServletResponse response) {
+        ResultResponse resultResponse = new ResultResponse();
+        try {
+            if (logupService.searchKeyAndCreateUser(key, response)) {
+                resultResponse.setResultMsg("注册成功已经可以登陆了");
+            } else {
+                resultResponse.setResultMsg("注册失败,验证邮件已经过期请重新注册");
+                resultResponse.setResultCode("200209");
+            }
+        } catch (JsonProcessingException e) {
+            resultResponse.setResultCode(e.getMessage());
+            resultResponse.setResultMsg("在将usession转换成json格式时出现了错误");
+        }
+        return resultResponse;
     }
 }

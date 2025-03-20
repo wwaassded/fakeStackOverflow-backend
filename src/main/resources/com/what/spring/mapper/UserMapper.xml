@@ -12,6 +12,10 @@
         VALUES (#{thirdpartyId}, #{userName}, #{userEmail}, #{avatarUrl}, #{userPassword}, #{is_active}, #{dataId},
         #{settingId}, 0);
     </insert>
+    <update id="setUserAvatar">
+        update stackoverflow_user set avatar_url=#{avatar}
+        where website_id=#{id}
+    </update>
 
     <select id="getPlatformUserByThirdplatformId" resultType="PlatfromUser">
         select * from stackoverflow_user where thirdparty_id=#{id};

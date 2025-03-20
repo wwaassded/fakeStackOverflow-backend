@@ -57,7 +57,7 @@ mybatis:
   type-aliases-package: com.what.spring.pojo
 
 frontend:
-  root: http://localhost:4001
+  root: http://localhost:4002
   mainPage: /#/index
 backend:
   root: http://localhost:8888
@@ -79,3 +79,11 @@ thread-pool:
     maxthread-number: 20
     keepalive-time: 60
     blockque-len: 100
+
+nginx:
+  localdir: /Users/whatyi/Pictures/staticProperties/
+  root: http://localhost:8080/downloads
+  avatar:
+    redis-key: all-default-avatar-urls
+    root: /avatar/
+    defaultAvatar: defaultAvatar.png

@@ -20,4 +20,6 @@ public interface UserMapper {
 
     void insertPlatformUserWithDefaultTime(PlatfromUser platfromUser);
 
+    void setUserAvatar(@Param("id") int websiteId, @Param("avatar") String avatarUrl);
+
 }
