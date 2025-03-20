@@ -8,8 +8,11 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.function.Predicate;
 
 @Service
 public class NginxService {
@@ -33,12 +36,14 @@ public class NginxService {
     }
 
     public List<String> getAllDefaultAvatarUrl() {
-        Object object = redisTemplate.opsForValue().get(nginxProperties.getAvatarRedisKey());
-        if (object != null) {
-            return null;
+        String object = (String) redisTemplate.opsForValue().get(nginxProperties.getAvatarRedisKey());
+        if (object != null && object.charAt(0) == '[' && object.charAt(object.length() - 1) == ']') {
+            object = object.substring(1, object.length() - 1);
+            String[] split = object.split(",");
+            return new ArrayList<>(Arrays.asList(split));
         }
         List<String> allDefaultAvatars = avatarMapper.getAllDefaultAvatar().stream().map(this::getUrlByAvatar).toList();
-        cacheThreadPoolExecutor.execute(() -> redisTemplate.opsForValue().set(nginxProperties.getAvatarRedisKey(), allDefaultAvatars, Duration.ofHours(1)));
+        cacheThreadPoolExecutor.execute(() -> redisTemplate.opsForValue().set(nginxProperties.getAvatarRedisKey(), allDefaultAvatars.toString(), Duration.ofHours(1)));
         return allDefaultAvatars;
     }
 

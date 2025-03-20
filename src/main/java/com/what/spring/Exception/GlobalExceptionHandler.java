@@ -11,6 +11,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @SuppressWarnings("LoggingSimilarMessage")
 @ControllerAdvice
@@ -72,6 +73,13 @@ public class GlobalExceptionHandler {
     public ResultResponse exceptionHandler(MessagingException exception) {
         LOG.error("邮件发送问题 ", exception);
         return ResultResponse.error(ExceptionEnum.EMAIL_SENDING_ERROR.getResultCode(), ExceptionEnum.EMAIL_SENDING_ERROR.getResultMsg() + exception.getMessage());
+    }
+
+    @ExceptionHandler(value = NoResourceFoundException.class)
+    @ResponseBody
+    public ResultResponse exceptionHandler(NoResourceFoundException exception) {
+        LOG.error("无法找到静态资源: {} {} ", exception.getResourcePath(), exception.getHttpMethod(), exception);
+        return ResultResponse.error(ExceptionEnum.CANOT_FIND_STATIC_PROPERTIES);
     }
 
     @ExceptionHandler(value = Exception.class)
