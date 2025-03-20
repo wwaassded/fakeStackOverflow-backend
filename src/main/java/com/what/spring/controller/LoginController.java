@@ -23,11 +23,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.time.Duration;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 

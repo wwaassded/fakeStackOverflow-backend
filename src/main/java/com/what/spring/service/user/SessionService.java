@@ -28,9 +28,9 @@ public class SessionService {
     public UserSession userSessionHandle(PlatfromUser platfromUser, HttpServletResponse response) throws JsonProcessingException {
         UserSession userSession = new UserSession(false);
         userSession.fillUserInfo(platfromUser);
-        String jsonSession = objectMapper.writeValueAsString(userSession);
         String sessionId = Utils.getSessionId(userSession);
         userSession.setSessionId(sessionId);
+        String jsonSession = objectMapper.writeValueAsString(userSession);
         Cookie sessionCookie = Utils.getGlobalCookie("sessionId", sessionId, 3600);
         response.addCookie(sessionCookie);
         cacheThreadPool.execute(() -> redisTemplate.opsForValue().set(sessionId, jsonSession, Duration.ofHours(1)));

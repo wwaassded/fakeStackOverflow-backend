@@ -14,9 +14,9 @@ import java.util.concurrent.locks.ReentrantLock;
 @Component("redisExpirationListener")
 public class RedisExpirationListener implements MessageListener {
 
-    private ConcurrentHashMap<String, SessionCounter> sessionCache;
+    private final ConcurrentHashMap<String, SessionCounter> sessionCache = new ConcurrentHashMap<>();
 
-    private ConcurrentHashMap<String, ReentrantLock> reentrantLockCache;
+    private final ConcurrentHashMap<String, ReentrantLock> reentrantLockCache = new ConcurrentHashMap<>();
 
     @Override
     public void onMessage(Message message, byte[] pattern) {

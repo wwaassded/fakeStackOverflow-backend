@@ -57,7 +57,7 @@ mybatis:
   type-aliases-package: com.what.spring.pojo
 
 frontend:
-  root: http://localhost:4001
+  root: http://localhost:4002
   mainPage: /#/index
 backend:
   root: http://localhost:8888
