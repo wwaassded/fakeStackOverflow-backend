@@ -15,6 +15,9 @@ public class NginxProperties {
     @Value("${nginx.root}")
     private String nginxRoot;
 
+    @Value("${nginx.avatar.redis-key}")
+    private String avatarRedisKey;
+
     @Value("${nginx.avatar.root}")
     private String nginxAvatarRoot;
 

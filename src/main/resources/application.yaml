@@ -84,5 +84,6 @@ nginx:
   localdir: /Users/whatyi/Pictures/staticProperties/
   root: http://localhost:8080/downloads
   avatar:
+    redis-key: all-default-avatar-urls
     root: /avatar/
     defaultAvatar: defaultAvatar.png
