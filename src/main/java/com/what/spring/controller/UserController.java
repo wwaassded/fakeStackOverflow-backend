@@ -35,6 +35,7 @@ public class UserController {
     public ResultResponse createNewUserOnThirdPlatformUser(@Valid @RequestBody NameAndPassword nameAndPassword, HttpServletRequest request) {
         UserSession userSession = (UserSession) request.getAttribute("userSession");
         userService.createUserOnThirdPlatformUser(userSession, nameAndPassword);
+        return ResultResponse.success();
     }
 
     @PostMapping("avatar")

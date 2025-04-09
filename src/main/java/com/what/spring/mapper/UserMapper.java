@@ -1,6 +1,7 @@
 package com.what.spring.mapper;
 
 import com.what.spring.pojo.thirAuth.PlatfromUser;
+import com.what.spring.pojo.user.NameAndPassword;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -22,4 +23,5 @@ public interface UserMapper {
 
     void setUserAvatar(@Param("id") int websiteId, @Param("avatar") String avatarUrl);
 
+    void updateThridPlatformUser(@Param("id") int websiteId, @Param("nameAndPassword") NameAndPassword nameAndPassword);
 }

@@ -5,13 +5,17 @@ import com.github.dozermapper.core.MappingException;
 import com.what.spring.pojo.ResultResponse;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
+
+import java.sql.SQLException;
 
 @SuppressWarnings("LoggingSimilarMessage")
 @ControllerAdvice
@@ -80,6 +84,20 @@ public class GlobalExceptionHandler {
     public ResultResponse exceptionHandler(NoResourceFoundException exception) {
         LOG.error("无法找到静态资源: {} {} ", exception.getResourcePath(), exception.getHttpMethod(), exception);
         return ResultResponse.error(ExceptionEnum.CANOT_FIND_STATIC_PROPERTIES);
+    }
+
+    @ExceptionHandler(value = CannotFindUser.class)
+    @ResponseBody
+    public ResultResponse exceptionHandler(CannotFindUser exception) {
+        LOG.error("数据库中无法找到相对应的用户信息: {}", exception.getResultMsg());
+        return ResultResponse.error(ExceptionEnum.USER_NOT_DOUND);
+    }
+
+    @ExceptionHandler(value = {PersistenceException.class, DataAccessException.class, SQLException.class})
+    @ResponseBody
+    public ResultResponse exceptionHandler(Exception exception) {
+        LOG.error("数据库异常", exception);
+        return ResultResponse.error(ExceptionEnum.DATABASE_ERROR);
     }
 
     @ExceptionHandler(value = Exception.class)

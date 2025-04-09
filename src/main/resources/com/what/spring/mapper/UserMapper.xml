@@ -33,4 +33,11 @@
         where website_id =#{id};
     </select>
 
+    <update id="updateThridPlatformUser">
+        update stackoverflow_user
+        set
+        user_name=#{nameAndPassword.name},user_password=#{nameAndPassword.password},user_email=#{nameAndPassword.email}
+        where website_id=#{id}
+    </update>
+
 </mapper>

@@ -7,6 +7,8 @@ public enum ExceptionEnum implements BaseErrorInfoInterface {
     BODY_NOT_MATCH("4000", "请求的数据格式不符!"),
     SIGNATURE_NOT_MATCH("4001", "请求的数字签名不匹配!"),
     NOT_FOUND("4004", "未找到该资源!"),
+    USER_NOT_DOUND("4005", "用户未找到"),
+    DATABASE_ERROR("4006", "数据库异常"),
     INTERNAL_SERVER_ERROR("5000", "服务器内部错误!"),
     JSON_PARSE_ERROR("50001", "服务器内部解析JSON结构出错"),
     EMAIL_SENDING_ERROR("50002", "发送邮件时发生错误"),

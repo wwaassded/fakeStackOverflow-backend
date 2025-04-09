@@ -9,7 +9,6 @@ import lombok.Data;
 @Data
 public class NameAndPassword {
     @Size(min = 4, max = 32, message = "用户名称的长度只能是4~32")
-    @NotBlank(message = "姓名不能为空")
     private String name;
 
     @Size(min = 8, max = 16, message = "用户名称的长度只能是8~16")
@@ -17,7 +16,6 @@ public class NameAndPassword {
     private String password;
 
     @Email(message = "非法的邮箱格式")
-    @NotBlank(message = "邮箱不能为空")
     private String email;
 
     public void getMd5() {
